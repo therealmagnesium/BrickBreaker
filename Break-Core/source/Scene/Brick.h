@@ -3,7 +3,7 @@
 
 #define BRICK_TYPE_COUNT 3
 
-namespace Break::Scene
+namespace Break::Play
 {
     class Brick
     {

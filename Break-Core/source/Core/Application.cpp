@@ -1,13 +1,17 @@
 #include "Core/Application.h"
 #include "Core/Base.h"
+#include "Scene/Scene.h"
 
 #include <raylib.h>
 #include <math.h>
 
+using namespace Break::Play;
+
 namespace Break::Core
 {
-
     static Vector2 originalScreenDimensions;
+    static Scene* currentScene = NULL;
+
     Application* Application::s_instance = NULL;
 
     Application::Application(const AppInfo& info) : m_info(info)
@@ -22,7 +26,15 @@ namespace Break::Core
 
     void Application::Run()
     {
-        if (!m_primaryCamera)
+        if (!currentScene)
+        {
+
+            TraceLog(LOG_FATAL, "Cannot run application because no scene set!");
+            this->Quit();
+            return;
+        }
+
+        if (!currentScene->GetPrimaryCamera())
         {
             TraceLog(LOG_FATAL, "Cannot run application because no primary camera set!");
             this->Quit();
@@ -32,27 +44,60 @@ namespace Break::Core
         while (m_running)
         {
             this->HandleEvents();
-            this->OnUpdate();
+            currentScene->OnUpdate();
 
-            BeginDrawing();
+            if (currentScene)
             {
-                ClearBackground(m_clearColor);
-
-                BeginMode2D(*m_primaryCamera);
+                BeginDrawing();
                 {
-                    this->OnRender();
-                }
-                EndMode2D();
+                    ClearBackground(currentScene->GetClearColor());
 
-                this->OnUIRender();
+                    BeginMode2D(*currentScene->GetPrimaryCamera());
+                    {
+                        currentScene->OnRender();
+                    }
+                    EndMode2D();
+
+                    currentScene->OnUIRender();
+                }
+                EndDrawing();
             }
-            EndDrawing();
         }
 
         CloseWindow();
     }
 
-    void Application::Quit() { m_running = false; }
+    void Application::Quit()
+    {
+        m_running = false;
+
+        Scene* temp = currentScene;
+        currentScene = NULL;
+        delete temp;
+    }
+
+    void Application::SetScenes(Scene** scenes, u8 numScenes)
+    {
+        m_scenes.resize(numScenes);
+
+        for (u8 i = 0; i < numScenes; i++)
+            m_scenes[i] = scenes[i];
+    }
+
+    void Application::SwitchToScene(u8 sceneIndex)
+    {
+        if (sceneIndex > m_scenes.size())
+        {
+            TraceLog(LOG_ERROR, "Failed to switch to scene %d because outside of index", sceneIndex);
+            return;
+        }
+
+        Scene* prevScene = currentScene;
+        currentScene = m_scenes[sceneIndex];
+
+        if (prevScene)
+            delete prevScene;
+    }
 
     void Application::HandleEvents()
     {
@@ -63,8 +108,9 @@ namespace Break::Core
             m_info.screenWidth = GetScreenWidth();
             m_info.screenHeight = GetScreenHeight();
 
+            Camera2D* camera = currentScene->GetPrimaryCamera();
             float widthRatio = m_info.screenWidth / originalScreenDimensions.x;
-            m_primaryCamera->zoom = widthRatio;
+            camera->zoom = widthRatio;
 
             TraceLog(LOG_INFO, "Window resized to %dx%d", m_info.screenWidth, m_info.screenHeight);
         }

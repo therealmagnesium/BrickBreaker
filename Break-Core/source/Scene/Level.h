@@ -7,7 +7,7 @@
 
 using namespace Break::Core;
 
-namespace Break::Scene
+namespace Break::Play
 {
     class Level
     {

@@ -1,8 +1,12 @@
 #pragma once
 #include "Core/Base.h"
+#include "Scene/Scene.h"
 
 #include <raylib.h>
 #include <string>
+#include <vector>
+
+using namespace Break::Play;
 
 namespace Break::Core
 {
@@ -23,29 +27,24 @@ namespace Break::Core
 
         void Run();
         void Quit();
+        void SwitchToScene(u8 sceneIndex);
 
     public:
         static inline Application* Get() { return s_instance; }
         inline bool IsRunning() { return m_running; }
         inline AppInfo& GetInfo() { return m_info; }
 
-        inline void SetClearColor(Color color) { m_clearColor = color; }
-        inline void SetPrimaryCamera(Camera2D* camera) { m_primaryCamera = camera; }
-
     protected:
-        virtual void OnUpdate() {}
-        virtual void OnRender() {}
-        virtual void OnUIRender() {}
+        void SetScenes(Scene** scenes, u8 numScenes);
 
     private:
         void HandleEvents();
 
     private:
         bool m_running = true;
-
         AppInfo m_info;
-        Color m_clearColor = RAYWHITE;
-        Camera2D* m_primaryCamera = NULL;
+
+        std::vector<Scene*> m_scenes;
 
     private:
         static Application* s_instance;

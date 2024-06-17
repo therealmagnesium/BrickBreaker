@@ -1,33 +1,31 @@
 #pragma once
+#include "PlayScene.h"
+#include "TitleScene.h"
+
 #include <Core/Application.h>
+#include <Core/Base.h>
+#include <Scene/Scene.h>
 
-#include <Scene/Ball.h>
-#include <Scene/Brick.h>
-#include <Scene/Level.h>
-#include <Scene/Paddle.h>
-
-#include <raylib.h>
+#define PLAY_SCENE 0
+#define TITLE_SCENE 1
+#define SCENE_COUNT 2
 
 using namespace Break::Core;
-using namespace Break::Scene;
+using namespace Break::Play;
+
+/*
+ * Note: All client scenes added to the core
+ *      application's collection of scenes
+ *      are already taken care of, freeing
+ *      memory wise.*/
 
 class Game : public Application
 {
 public:
     Game(const AppInfo& info);
 
-    void OnUpdate() override;
-    void OnRender() override;
-    void OnUIRender() override;
-
 private:
-    void CreateBall();
-    void CreatePaddle();
-    void CreateLevel();
-
-private:
-    Ball m_ball;
-    Level m_level;
-    Paddle m_paddle;
-    Camera2D m_camera;
+    PlayScene* m_playScene;
+    TitleScene* m_titleScene;
+    Scene* m_scenes[SCENE_COUNT]{};
 };

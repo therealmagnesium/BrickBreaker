@@ -1,7 +1,7 @@
 #pragma once
 #include <raylib.h>
 
-namespace Break::Scene
+namespace Break::Play
 {
     class Paddle
     {

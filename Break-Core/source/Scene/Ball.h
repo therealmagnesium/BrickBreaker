@@ -5,7 +5,7 @@
 #include <raylib.h>
 #include <string>
 
-namespace Break::Scene
+namespace Break::Play
 {
     class Ball
     {
