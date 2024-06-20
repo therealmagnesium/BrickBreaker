@@ -1,6 +1,7 @@
 #pragma once
 #include "PlayScene.h"
 #include "TitleScene.h"
+#include "LoadingScene.h"
 
 #include <Core/Application.h>
 #include <Core/Base.h>
@@ -8,7 +9,8 @@
 
 #define PLAY_SCENE 0
 #define TITLE_SCENE 1
-#define SCENE_COUNT 2
+#define LOADING_SCENE 2
+#define SCENE_COUNT 3
 
 using namespace Break::Core;
 using namespace Break::Play;
@@ -27,5 +29,6 @@ public:
 private:
     PlayScene* m_playScene;
     TitleScene* m_titleScene;
+    LoadingScene* m_loadingScene;
     Scene* m_scenes[SCENE_COUNT]{};
 };

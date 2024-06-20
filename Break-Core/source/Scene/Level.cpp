@@ -49,16 +49,19 @@ namespace Break::Play
                     case 1:
                     {
                         brick.SetColor(m_mapData.brickColors[0]);
+                        brick.SetNumLives(1);
                         break;
                     }
                     case 2:
                     {
                         brick.SetColor(m_mapData.brickColors[1]);
+                        brick.SetNumLives(2);
                         break;
                     }
                     case 3:
                     {
                         brick.SetColor(m_mapData.brickColors[2]);
+                        brick.SetNumLives(3);
                         break;
                     }
 
@@ -69,6 +72,12 @@ namespace Break::Play
                 m_bricks.push_back(brick);
             }
         }
+    }
+
+    void Level::Update()
+    {
+        for (auto& brick : m_bricks)
+            brick.Update();
     }
 
     void Level::Draw()

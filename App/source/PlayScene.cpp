@@ -13,6 +13,11 @@ PlayScene::PlayScene()
     app = Application::Get();
     assert(app);
 
+    this->SetDebugName("Play");
+}
+
+void PlayScene::OnCreate()
+{
     m_camera.target = {0.f, 0.f};
     m_camera.offset = {0.f, 0.f};
     m_camera.rotation = 0.f;
@@ -24,8 +29,6 @@ PlayScene::PlayScene()
 
     this->SetClearColor({20, 20, 20, 255});
     this->SetPrimaryCamera(&m_camera);
-
-    DisableCursor();
 }
 
 void PlayScene::OnUpdate()
@@ -33,6 +36,7 @@ void PlayScene::OnUpdate()
     if (IsKeyPressed(KEY_ESCAPE))
         app->Quit();
 
+    m_level.Update();
     m_paddle.Update();
     m_ball.Update();
 }
@@ -78,5 +82,5 @@ void PlayScene::CreateLevel()
 {
     m_level.SetMapOffset(20.f, 80.f);
     m_level.SetBrickSpacing(30.f, 20.f);
-    m_level.Load("assets/levels/level1.map");
+    m_level.Load("assets/levels/level2.map");
 }

@@ -145,28 +145,28 @@ namespace Break::Play
                     if ((ballTop <= brickBottom) && (ballTop > brickBottom - brick.GetSize().y / 2.f) &&
                         horizontalCheck && (m_velocity.y < 0.f))
                     {
-                        brick.SetActive(false);
+                        brick.Hit();
                         m_velocity.y *= -1.f;
                     }
                     // Hit from above
                     else if ((ballBottom >= brickTop) && (ballBottom < brickTop + brick.GetSize().y / 2.f) &&
                              horizontalCheck && (m_velocity.y > 0.f))
                     {
-                        brick.SetActive(false);
+                        brick.Hit();
                         m_velocity.y *= -1.f;
                     }
                     // Hit from left
                     else if ((ballRight >= brickLeft) && (ballRight < brickLeft + brick.GetSize().x / 2.f) &&
                              verticalCheck && (m_velocity.x > 0.f))
                     {
-                        brick.SetActive(false);
+                        brick.Hit();
                         m_velocity.x *= -1.f;
                     }
                     // Hit from right
                     else if ((ballLeft <= brickRight) && (ballLeft > brickRight - brick.GetSize().x / 2.f) &&
                              verticalCheck && (m_velocity.x < 0.f))
                     {
-                        brick.SetActive(false);
+                        brick.Hit();
                         m_velocity.x *= -1.f;
                     }
                 }

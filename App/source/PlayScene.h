@@ -17,6 +17,7 @@ class PlayScene : public Scene
 public:
     PlayScene();
 
+    void OnCreate() override;
     void OnUpdate() override;
     void OnRender() override;
     void OnUIRender() override;

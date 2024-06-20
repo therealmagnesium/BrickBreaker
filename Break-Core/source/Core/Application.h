@@ -24,6 +24,7 @@ namespace Break::Core
     {
     public:
         Application(const AppInfo& info);
+        ~Application();
 
         void Run();
         void Quit();
@@ -32,6 +33,7 @@ namespace Break::Core
     public:
         static inline Application* Get() { return s_instance; }
         inline bool IsRunning() { return m_running; }
+        inline s8 GetSceneIndex() { return m_sceneIndex; }
         inline AppInfo& GetInfo() { return m_info; }
 
     protected:
@@ -43,7 +45,9 @@ namespace Break::Core
     private:
         bool m_running = true;
         AppInfo m_info;
+        s8 m_sceneIndex = -1;
 
+        Scene* m_loadingScene;
         std::vector<Scene*> m_scenes;
 
     private:

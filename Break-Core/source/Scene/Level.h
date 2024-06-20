@@ -15,6 +15,7 @@ namespace Break::Play
         Level();
 
         void Load(const char* path);
+        void Update();
         void Draw();
 
     public:

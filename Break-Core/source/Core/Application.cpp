@@ -1,4 +1,5 @@
 #include "Core/Application.h"
+#include "Core/AssetManager.h"
 #include "Core/Base.h"
 #include "Scene/Scene.h"
 
@@ -24,17 +25,31 @@ namespace Break::Core
         SetTargetFPS(60);
     }
 
+    Application::~Application()
+    {
+        for (u8 i = 0; i < m_scenes.size(); i++)
+        {
+            if (m_scenes[i])
+            {
+                TraceLog(LOG_INFO, "Deleting scene, %s", m_scenes[i]->GetDebugName().c_str());
+                delete m_scenes[i];
+                m_scenes[i] = NULL;
+            }
+        }
+
+        m_scenes.clear();
+    }
+
     void Application::Run()
     {
         if (!currentScene)
         {
-
             TraceLog(LOG_FATAL, "Cannot run application because no scene set!");
             this->Quit();
             return;
         }
 
-        if (!currentScene->GetPrimaryCamera())
+        if (!currentScene->GetPrimaryCamera() && !currentScene->CanLoadAssets())
         {
             TraceLog(LOG_FATAL, "Cannot run application because no primary camera set!");
             this->Quit();
@@ -70,10 +85,7 @@ namespace Break::Core
     void Application::Quit()
     {
         m_running = false;
-
-        Scene* temp = currentScene;
-        currentScene = NULL;
-        delete temp;
+        AssetManager::Clean();
     }
 
     void Application::SetScenes(Scene** scenes, u8 numScenes)
@@ -81,22 +93,58 @@ namespace Break::Core
         m_scenes.resize(numScenes);
 
         for (u8 i = 0; i < numScenes; i++)
+        {
             m_scenes[i] = scenes[i];
+            m_scenes[i]->SetSceneIndex(i);
+        }
     }
 
     void Application::SwitchToScene(u8 sceneIndex)
     {
-        if (sceneIndex > m_scenes.size())
+        for (Scene* scene : m_scenes)
         {
-            TraceLog(LOG_ERROR, "Failed to switch to scene %d because outside of index", sceneIndex);
+            if (scene->CanLoadAssets())
+                m_loadingScene = scene;
+        }
+
+        if (sceneIndex == m_loadingScene->GetSceneIndex())
+        {
+            TraceLog(LOG_ERROR, "Switching to loading scene is done automatically!", sceneIndex);
             return;
         }
 
-        Scene* prevScene = currentScene;
-        currentScene = m_scenes[sceneIndex];
+        if (sceneIndex > m_scenes.size())
+        {
+            TraceLog(LOG_ERROR, "Failed to switch to scene %d because outside of index!", sceneIndex);
+            return;
+        }
 
-        if (prevScene)
-            delete prevScene;
+        if (!m_scenes[sceneIndex])
+        {
+            TraceLog(LOG_ERROR, "Failed to switch to scene %d because it's null!", sceneIndex);
+            return;
+        }
+
+        m_sceneIndex = sceneIndex;
+        m_loadingScene->OnCreate();
+
+        s8 prevSceneIndex = -1;
+
+        if (currentScene)
+            prevSceneIndex = currentScene->GetSceneIndex();
+
+        currentScene = m_scenes[sceneIndex];
+        currentScene->OnCreate();
+
+        bool deletePreviousScene =
+            (prevSceneIndex != -1) && (m_scenes[prevSceneIndex]) && (!m_scenes[prevSceneIndex]->CanLoadAssets());
+
+        if (deletePreviousScene)
+        {
+            AssetManager::Clean();
+            delete m_scenes[prevSceneIndex];
+            m_scenes[prevSceneIndex] = NULL;
+        }
     }
 
     void Application::HandleEvents()

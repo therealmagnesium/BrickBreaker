@@ -1,7 +1,7 @@
 # There will be Rows*Columns bricks total
 Rows: 3
 Columns: 8
-Colors: Red Orange Yellow 
+Colors: Yellow Orange Red 
 
 # Tilemap data
 33333333
