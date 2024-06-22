@@ -2,15 +2,20 @@
 #include "PlayScene.h"
 #include "TitleScene.h"
 #include "LoadingScene.h"
+#include "CreditsScene.h"
 
 #include <Core/Application.h>
 #include <Core/Base.h>
 #include <Scene/Scene.h>
 
-#define PLAY_SCENE 0
-#define TITLE_SCENE 1
-#define LOADING_SCENE 2
-#define SCENE_COUNT 3
+enum GameScenes
+{
+    TITLE_SCENE = 0,
+    PLAY_SCENE,
+    CREDITS_SCENE,
+    LOADING_SCENE,
+    GAME_SCENE_COUNT,
+};
 
 using namespace Break::Core;
 using namespace Break::Play;
@@ -30,5 +35,7 @@ private:
     PlayScene* m_playScene;
     TitleScene* m_titleScene;
     LoadingScene* m_loadingScene;
-    Scene* m_scenes[SCENE_COUNT]{};
+    CreditsScene* m_creditsScene;
+
+    Scene* m_scenes[GAME_SCENE_COUNT]{};
 };

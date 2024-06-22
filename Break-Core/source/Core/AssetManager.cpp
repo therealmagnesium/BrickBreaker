@@ -31,7 +31,7 @@ namespace Break::Core
         m_textures[name] = textureHandle;
     }
 
-    void AssetManager::AddFont(const std::string& name, const std::string& path)
+    void AssetManager::AddFont(const std::string& name, const std::string& path, u32 fontSize)
     {
         if (m_fonts.find(name) != m_fonts.end())
         {
@@ -39,7 +39,7 @@ namespace Break::Core
             return;
         }
 
-        Font font = LoadFontEx(path.c_str(), 120, NULL, 0);
+        Font font = LoadFontEx(path.c_str(), fontSize, NULL, 0);
         Font* fontHandle = new Font();
         *fontHandle = font;
 

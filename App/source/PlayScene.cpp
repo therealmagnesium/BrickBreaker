@@ -1,4 +1,5 @@
 #include "PlayScene.h"
+#include "Game.h"
 
 #include <Core/Application.h>
 #include <Core/IO.h>
@@ -34,7 +35,7 @@ void PlayScene::OnCreate()
 void PlayScene::OnUpdate()
 {
     if (IsKeyPressed(KEY_ESCAPE))
-        app->Quit();
+        app->SwitchToScene(TITLE_SCENE);
 
     m_level.Update();
     m_paddle.Update();

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Core/Application.h>
 #include <Core/Base.h>
 #include <Scene/Button.h>
@@ -10,19 +11,16 @@
 using namespace Break::Core;
 using namespace Break::Play;
 
-enum TitleSceneButtons
+enum CreditSceneLabels
 {
-    TITLE_BUTTON_PLAY = 0,
-    TITLE_BUTTON_OPTIONS,
-    TITLE_BUTTON_CREDITS,
-    TITLE_BUTTON_QUIT,
-    TITLE_BUTTON_COUNT,
+    CREDITS_LABEL_TITLE = 0,
+    CREDITS_LABEL_COUNT,
 };
 
-class TitleScene : public Scene
+class CreditsScene : public Scene
 {
 public:
-    TitleScene();
+    CreditsScene();
 
     void OnCreate() override;
     void OnUpdate() override;
@@ -30,12 +28,6 @@ public:
     void OnUIRender() override;
 
 private:
-    void CreateButtons();
-    void CreateTitleLabel();
-    void UpdateButtons();
-
-private:
     Camera2D m_camera;
-    Label m_titleLabel;
-    Button m_buttons[TITLE_BUTTON_COUNT];
+    Label m_labels[CREDITS_LABEL_COUNT];
 };

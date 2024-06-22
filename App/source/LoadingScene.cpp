@@ -28,13 +28,20 @@ void LoadingScene::OnCreate()
         // Load assets for the title scene
         case TITLE_SCENE:
         {
-            AssetManager::AddTexture("button", "assets/textures/button.png");
-            AssetManager::AddFont("recharge", "assets/fonts/recharge.ttf");
+            AssetManager::AddTexture("basic button", "assets/textures/button.png");
+            AssetManager::AddTexture("quit button", "assets/textures/quit_button.png");
+            AssetManager::AddFont("recharge", "assets/fonts/recharge.ttf", 120);
             break;
         }
         // Load assets for the play scene
         case PLAY_SCENE:
         {
+            break;
+        }
+
+        case CREDITS_SCENE:
+        {
+            AssetManager::AddFont("recharge", "assets/fonts/recharge.ttf", 100);
             break;
         }
 

@@ -10,7 +10,7 @@ namespace Break::Play
         m_scale = {1.f, 1.f};
 
         m_label.SetSpacing(4.f);
-        m_label.SetText("default");
+        m_label.SetText("");
         m_label.SetColor(RAYWHITE);
         m_label.SetFontSize(50);
     }

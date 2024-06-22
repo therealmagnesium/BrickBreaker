@@ -23,6 +23,7 @@ namespace Break::Core
         SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
         InitWindow(m_info.screenWidth, m_info.screenHeight, m_info.name.c_str());
         SetTargetFPS(60);
+        SetExitKey(KEY_NULL);
     }
 
     Application::~Application()
@@ -125,26 +126,13 @@ namespace Break::Core
             return;
         }
 
+        AssetManager::Clean();
+
         m_sceneIndex = sceneIndex;
         m_loadingScene->OnCreate();
 
-        s8 prevSceneIndex = -1;
-
-        if (currentScene)
-            prevSceneIndex = currentScene->GetSceneIndex();
-
         currentScene = m_scenes[sceneIndex];
         currentScene->OnCreate();
-
-        bool deletePreviousScene =
-            (prevSceneIndex != -1) && (m_scenes[prevSceneIndex]) && (!m_scenes[prevSceneIndex]->CanLoadAssets());
-
-        if (deletePreviousScene)
-        {
-            AssetManager::Clean();
-            delete m_scenes[prevSceneIndex];
-            m_scenes[prevSceneIndex] = NULL;
-        }
     }
 
     void Application::HandleEvents()

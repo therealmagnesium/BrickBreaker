@@ -17,7 +17,7 @@ namespace Break::Core
     {
     public:
         static void AddTexture(const std::string& name, const std::string& path);
-        static void AddFont(const std::string& name, const std::string& path);
+        static void AddFont(const std::string& name, const std::string& path, u32 fontSize = 80.f);
         static void AddShader(const std::string& name, const ShaderSource& source);
         static void Clean();
 

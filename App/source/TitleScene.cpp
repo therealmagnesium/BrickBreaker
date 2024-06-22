@@ -38,11 +38,14 @@ void TitleScene::OnCreate()
 
 void TitleScene::OnUpdate()
 {
-    if (IsKeyPressed(KEY_ESCAPE))
-        app->Quit();
-
     if (m_buttons[TITLE_BUTTON_PLAY].IsClicked())
         app->SwitchToScene(PLAY_SCENE);
+
+    if (m_buttons[TITLE_BUTTON_CREDITS].IsClicked())
+        app->SwitchToScene(CREDITS_SCENE);
+
+    if (m_buttons[TITLE_BUTTON_QUIT].IsClicked())
+        app->Quit();
 
     this->UpdateButtons();
 }
@@ -57,20 +60,25 @@ void TitleScene::OnRender()
 
 void TitleScene::OnUIRender()
 {
+    /*
     AppInfo& appInfo = app->GetInfo();
-    DrawFPS(20, appInfo.screenHeight - 20);
+    DrawFPS(20, appInfo.screenHeight - 20);*/
 }
 
 void TitleScene::CreateButtons()
 {
     AppInfo& appInfo = app->GetInfo();
-    Texture2D* buttonTexture = AssetManager::GetTexture("button");
+    Texture2D* basicButtonTexture = AssetManager::GetTexture("basic button");
+    Texture2D* quitButtonTexture = AssetManager::GetTexture("quit button");
 
     for (u8 i = 0; i < TITLE_BUTTON_COUNT; i++)
     {
+        if (i == TITLE_BUTTON_QUIT)
+            continue;
+
         m_buttons[i].SetScale(2.5f, 2.3f);
         m_buttons[i].SetPosition(appInfo.screenWidth / 2.f, appInfo.screenHeight / 2.f + (i * 200.f));
-        m_buttons[i].SetTexture(buttonTexture);
+        m_buttons[i].SetTexture(basicButtonTexture);
         m_buttons[i].SetHoverColor({222, 222, 222, 255});
 
         Label& label = m_buttons[i].GetLabel();
@@ -94,6 +102,11 @@ void TitleScene::CreateButtons()
                 break;
             }
         }
+
+        m_buttons[TITLE_BUTTON_QUIT].SetScale(3.f, 3.f);
+        m_buttons[TITLE_BUTTON_QUIT].SetPosition(200.f, appInfo.screenHeight - 200.f);
+        m_buttons[TITLE_BUTTON_QUIT].SetTexture(quitButtonTexture);
+        m_buttons[TITLE_BUTTON_QUIT].SetHoverColor({180, 180, 180, 255});
     }
 }
 
