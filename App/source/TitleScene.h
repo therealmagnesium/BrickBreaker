@@ -1,6 +1,8 @@
 #pragma once
 #include <Core/Application.h>
 #include <Core/Base.h>
+
+#include <Scene/Background.h>
 #include <Scene/Button.h>
 #include <Scene/Label.h>
 #include <Scene/Scene.h>
@@ -30,12 +32,14 @@ public:
     void OnUIRender() override;
 
 private:
+    void CreateBackground();
     void CreateButtons();
     void CreateTitleLabel();
     void UpdateButtons();
 
 private:
     Camera2D m_camera;
+    Background m_background;
     Label m_titleLabel;
     Button m_buttons[TITLE_BUTTON_COUNT];
 };

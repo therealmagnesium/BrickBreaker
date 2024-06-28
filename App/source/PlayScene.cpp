@@ -2,6 +2,7 @@
 #include "Game.h"
 
 #include <Core/Application.h>
+#include <Core/AssetManager.h>
 #include <Core/IO.h>
 
 #include <raylib.h>
@@ -24,6 +25,7 @@ void PlayScene::OnCreate()
     m_camera.rotation = 0.f;
     m_camera.zoom = 1.f;
 
+    this->CreateBackground();
     this->CreateLevel();
     this->CreatePaddle();
     this->CreateBall();
@@ -37,6 +39,7 @@ void PlayScene::OnUpdate()
     if (IsKeyPressed(KEY_ESCAPE))
         app->SwitchToScene(TITLE_SCENE);
 
+    m_background.Update();
     m_level.Update();
     m_paddle.Update();
     m_ball.Update();
@@ -44,6 +47,7 @@ void PlayScene::OnUpdate()
 
 void PlayScene::OnRender()
 {
+    m_background.Draw();
     m_paddle.Draw();
     m_ball.Draw();
     m_level.Draw();
@@ -53,6 +57,12 @@ void PlayScene::OnUIRender()
 {
     AppInfo& appInfo = app->GetInfo();
     DrawFPS(20, appInfo.screenHeight - 20);
+}
+
+void PlayScene::CreateBackground()
+{
+    Shader* shader = AssetManager::GetShader("panning squares");
+    m_background.SetShader(shader);
 }
 
 void PlayScene::CreateBall()
@@ -83,5 +93,5 @@ void PlayScene::CreateLevel()
 {
     m_level.SetMapOffset(20.f, 80.f);
     m_level.SetBrickSpacing(30.f, 20.f);
-    m_level.Load("assets/levels/level2.map");
+    m_level.Load("assets/levels/level1.map");
 }

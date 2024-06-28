@@ -1,6 +1,7 @@
 #pragma once
 #include <Core/Application.h>
 
+#include <Scene/Background.h>
 #include <Scene/Ball.h>
 #include <Scene/Brick.h>
 #include <Scene/Level.h>
@@ -23,11 +24,13 @@ public:
     void OnUIRender() override;
 
 private:
+    void CreateBackground();
     void CreateBall();
     void CreatePaddle();
     void CreateLevel();
 
 private:
+    Background m_background;
     Ball m_ball;
     Level m_level;
     Paddle m_paddle;

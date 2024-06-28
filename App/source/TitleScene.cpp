@@ -29,6 +29,7 @@ void TitleScene::OnCreate()
     m_camera.rotation = 0.f;
     m_camera.zoom = 1.f;
 
+    this->CreateBackground();
     this->CreateTitleLabel();
     this->CreateButtons();
 
@@ -47,11 +48,14 @@ void TitleScene::OnUpdate()
     if (m_buttons[TITLE_BUTTON_QUIT].IsClicked())
         app->Quit();
 
+    m_background.Update();
     this->UpdateButtons();
 }
 
 void TitleScene::OnRender()
 {
+    m_background.Draw();
+
     for (u8 i = 0; i < TITLE_BUTTON_COUNT; i++)
         m_buttons[i].Draw();
 
@@ -63,6 +67,12 @@ void TitleScene::OnUIRender()
     /*
     AppInfo& appInfo = app->GetInfo();
     DrawFPS(20, appInfo.screenHeight - 20);*/
+}
+
+void TitleScene::CreateBackground()
+{
+    Shader* shader = AssetManager::GetShader("panning squares");
+    m_background.SetShader(shader);
 }
 
 void TitleScene::CreateButtons()

@@ -60,7 +60,16 @@ namespace Break::Core
             return;
         }
 
-        Shader shader = LoadShader(source.vertexPath.c_str(), source.fragmentPath.c_str());
+        const char* vertexPath = 0;
+        const char* fragmentPath = 0;
+
+        if (!source.vertexPath.empty())
+            vertexPath = source.vertexPath.c_str();
+
+        if (!source.fragmentPath.empty())
+            fragmentPath = source.fragmentPath.c_str();
+
+        Shader shader = LoadShader(vertexPath, fragmentPath);
         Shader* shaderHandle = new Shader();
         *shaderHandle = shader;
 
@@ -95,8 +104,19 @@ namespace Break::Core
             }
         }
 
+        for (auto& [name, shader] : m_shaders)
+        {
+            if (shader)
+            {
+                TraceLog(LOG_INFO, "Deleting %s from shader assets", name.c_str());
+                UnloadShader(*shader);
+                delete shader;
+            }
+        }
+
         m_textures.clear();
         m_fonts.clear();
+        m_shaders.clear();
 
         TraceLog(LOG_INFO, "Successfully cleaned all assets!");
     }
