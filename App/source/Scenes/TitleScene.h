@@ -1,32 +1,37 @@
 #pragma once
-
 #include <Core/Application.h>
 #include <Core/Base.h>
 
 #include <Scene/Background.h>
-#include <Scene/Button.h>
-#include <Scene/Button.h>
-#include <Scene/Label.h>
 #include <Scene/Scene.h>
+
+#include <UI/CanvasContext.h>
 
 #include <raylib.h>
 
 using namespace Break::Core;
 using namespace Break::Play;
+using namespace Break::UI;
 
-enum CreditSceneLabel
+enum TitleSceneLabels
 {
-    CREDITS_LABEL_TITLE = 0,
-    CREDITS_LABEL_MAGNUS,
-    CREDITS_LABEL_LOGAN,
-    CREDITS_LABEL_MONIKA,
-    CREDITS_LABEL_COUNT,
+    TITLE_LABEL_TITLE = 0,
+    TITLE_LABEL_COUNT,
 };
 
-class CreditsScene : public Scene
+enum TitleSceneButtons
+{
+    TITLE_BUTTON_PLAY = 0,
+    TITLE_BUTTON_OPTIONS,
+    TITLE_BUTTON_CREDITS,
+    TITLE_BUTTON_QUIT,
+    TITLE_BUTTON_COUNT,
+};
+
+class TitleScene : public Scene
 {
 public:
-    CreditsScene();
+    TitleScene();
 
     void OnCreate() override;
     void OnUpdate() override;
@@ -35,11 +40,10 @@ public:
 
 private:
     void CreateBackground();
-    void CreateLabels();
+    void CreateCanvas();
 
 private:
     Camera2D m_camera;
     Background m_background;
-    Label m_labels[CREDITS_LABEL_COUNT];
-    CreditSceneLabel m_creditLabelIndex = CREDITS_LABEL_MAGNUS;
+    CanvasContext m_canvas;
 };

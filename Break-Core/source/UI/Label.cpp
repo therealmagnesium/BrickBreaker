@@ -1,7 +1,7 @@
-#include "Scene/Label.h"
+#include "UI/Label.h"
 #include <raylib.h>
 
-namespace Break::Play
+namespace Break::UI
 {
     Label::Label()
     {
@@ -25,7 +25,7 @@ namespace Break::Play
         origin.y = labelSize.y / 2.f;
 
         if (!m_text.empty() && m_active)
-            DrawTextPro(drawFont, m_text.c_str(), m_position, origin, 0.f, m_fontSize, m_spacing, m_color);
+            DrawTextPro(drawFont, m_text.c_str(), m_position, origin, m_rotation, m_fontSize, m_spacing, m_color);
     }
 
     void Label::SetFontFilter(TextureFilter filter)

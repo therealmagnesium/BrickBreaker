@@ -1,6 +1,7 @@
 #pragma once
 #include <Core/Base.h>
 #include <raylib.h>
+#include <unordered_map>
 
 #define BRICK_TYPE_COUNT 3
 
@@ -14,6 +15,7 @@ namespace Break::Play
         void Hit();
         void Update();
         void Draw();
+        void CreateTintMap();
 
     public:
         inline bool IsActive() { return m_active; }
@@ -31,10 +33,15 @@ namespace Break::Play
     private:
         bool m_active = true;
         bool m_hit = false;
+
+        u8 m_hitCount = 0;
         s8 m_numLives = 1;
+
         Color m_color = WHITE;
 
         Vector2 m_position;
         Vector2 m_size;
+
+        std::unordered_map<u8, Color> m_hitsToTint;
     };
 }

@@ -16,6 +16,7 @@ namespace Break::Play
     void Brick::Hit()
     {
         m_hit = true;
+        m_hitCount++;
         m_numLives -= 1;
     }
 
@@ -32,9 +33,16 @@ namespace Break::Play
         Color drawColor = m_color;
 
         if (m_hit)
-            drawColor = ColorTint(m_color, LIGHTGRAY);
+            drawColor = ColorTint(m_color, GRAY);
 
         if (m_active)
-            DrawRectangleV(m_position, m_size, drawColor);
+            DrawRectangleV(m_position, m_size, m_hitsToTint[m_hitCount]);
+    }
+
+    void Brick::CreateTintMap()
+    {
+        m_hitsToTint[0] = m_color;
+        m_hitsToTint[1] = ColorTint(m_color, GRAY);
+        m_hitsToTint[2] = ColorTint(m_color, DARKGRAY);
     }
 }

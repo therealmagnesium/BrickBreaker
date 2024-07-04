@@ -11,7 +11,8 @@
 namespace Break::Core
 {
     static std::unordered_map<std::string, Color> colors;
-    static void CreateFileColors()
+
+    void IO::Init()
     {
         colors["Red"] = RED;
         colors["Orange"] = ORANGE;
@@ -23,7 +24,6 @@ namespace Break::Core
 
     MapFileData IO::ReadMapFile(const char* path)
     {
-        CreateFileColors();
         MapFileData mapData;
 
         std::ifstream file(path);
@@ -49,13 +49,31 @@ namespace Break::Core
                 std::string newLine = line.substr(9);
                 mapData.numCols = std::stoi(newLine);
             }
+            else if (line.find("Offset:") != std::string::npos)
+            {
+                std::string newLine = line.substr(8);
+                std::stringstream offsetStream(newLine);
+                std::string inputOffset[2];
+
+                offsetStream >> inputOffset[0] >> inputOffset[1];
+                mapData.offset = {std::stof(inputOffset[0]), std::stof(inputOffset[1])};
+            }
+            else if (line.find("Spacing:") != std::string::npos)
+            {
+                std::string newLine = line.substr(9);
+                std::stringstream spacingStream(newLine);
+                std::string inputSpacing[2];
+
+                spacingStream >> inputSpacing[0] >> inputSpacing[1];
+                mapData.spacing = {std::stof(inputSpacing[0]), std::stof(inputSpacing[1])};
+            }
             else if (line.find("Colors:") != std::string::npos)
             {
                 std::string newLine = line.substr(8);
-                std::stringstream stream(newLine);
+                std::stringstream colorStream(newLine);
                 std::string inputColors[BRICK_TYPE_COUNT];
 
-                stream >> inputColors[0] >> inputColors[1] >> inputColors[2];
+                colorStream >> inputColors[0] >> inputColors[1] >> inputColors[2];
 
                 for (u8 i = 0; i < BRICK_TYPE_COUNT; i++)
                     mapData.brickColors[i] = colors[inputColors[i]];

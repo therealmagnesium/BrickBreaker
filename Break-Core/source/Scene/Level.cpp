@@ -20,8 +20,26 @@ namespace Break::Play
         assert(app);
         appInfo = app->GetInfo();
 
-        m_mapOffst = {0.f, 0.f};
-        m_brickSpacing = {50.f, 50.f};
+        m_mapData.offset = {0.f, 0.f};
+        m_mapData.spacing = {50.f, 50.f};
+    }
+
+    void Level::Update()
+    {
+        for (auto& brick : m_bricks)
+            brick.Update();
+    }
+
+    void Level::Draw()
+    {
+        for (auto& brick : m_bricks)
+            brick.Draw();
+    }
+
+    void Level::ActivateBricks()
+    {
+        for (Brick& brick : m_bricks)
+            brick.SetActive(true);
     }
 
     void Level::Load(const char* path)
@@ -37,11 +55,11 @@ namespace Break::Play
 
                 Brick brick;
 
-                float brickWidth = (appInfo.screenWidth / (float)m_mapData.numCols) - m_brickSpacing.x;
+                float brickWidth = (appInfo.screenWidth / (float)m_mapData.numCols) - m_mapData.spacing.x;
                 brick.SetSize(brickWidth, m_brickHeight);
 
-                float brickXPos = j * (brick.GetSize().x + m_brickSpacing.x) + m_mapOffst.x;
-                float brickYPos = i * (brick.GetSize().y + m_brickSpacing.y) + m_mapOffst.y;
+                float brickXPos = j * (brick.GetSize().x + m_mapData.spacing.x) + m_mapData.offset.x;
+                float brickYPos = i * (brick.GetSize().y + m_mapData.spacing.y) + m_mapData.offset.y;
                 brick.SetPosition(brickXPos, brickYPos);
 
                 switch (id)
@@ -69,20 +87,9 @@ namespace Break::Play
                         break;
                 }
 
+                brick.CreateTintMap();
                 m_bricks.push_back(brick);
             }
         }
-    }
-
-    void Level::Update()
-    {
-        for (auto& brick : m_bricks)
-            brick.Update();
-    }
-
-    void Level::Draw()
-    {
-        for (auto& brick : m_bricks)
-            brick.Draw();
     }
 }

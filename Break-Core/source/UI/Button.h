@@ -1,10 +1,10 @@
 #pragma once
 #include "Core/Base.h"
-#include "Scene/Label.h"
+#include "UI/Label.h"
 #include <raylib.h>
 #include <string>
 
-namespace Break::Play
+namespace Break::UI
 {
     class Button
     {

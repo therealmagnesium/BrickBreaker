@@ -1,8 +1,8 @@
 #pragma once
-#include "PlayScene.h"
-#include "TitleScene.h"
-#include "LoadingScene.h"
-#include "CreditsScene.h"
+#include "Scenes/PlayScene.h"
+#include "Scenes/TitleScene.h"
+#include "Scenes/LoadingScene.h"
+#include "Scenes/CreditsScene.h"
 
 #include <Core/Application.h>
 #include <Core/Base.h>

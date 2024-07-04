@@ -18,3 +18,6 @@ typedef uint64_t u64;
 #define V3_OPEN(v) v.x, v.y, v.z
 
 #define LEN(array) sizeof(array) / sizeof(array[0])
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))

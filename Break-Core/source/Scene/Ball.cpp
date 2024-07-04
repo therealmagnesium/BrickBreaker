@@ -15,13 +15,11 @@ using namespace Break::Core;
 namespace Break::Play
 {
     static Application* app = NULL;
-    static AppInfo appInfo;
 
     Ball::Ball()
     {
         app = Application::Get();
         assert(app);
-        appInfo = app->GetInfo();
 
         m_position = {0.f, 0.f};
         m_velocity = {0.f, 0.f};
@@ -37,14 +35,14 @@ namespace Break::Play
         this->HandleAllCollisions();
     }
 
-    void Ball::Draw() { DrawCircleV(m_position, m_radius, BLUE); }
+    void Ball::Draw() { DrawCircleV(m_position, m_radius, {97, 237, 205, 255}); }
 
     void Ball::HandleInput()
     {
         if (IsKeyPressed(KEY_SPACE) && !m_active)
         {
             m_active = true;
-            m_velocity = {m_paddle->GetVelocity(), -m_speed};
+            m_velocity = {m_paddle->GetVelocity() / 1.2f, -m_speed};
         }
     }
 
@@ -64,19 +62,24 @@ namespace Break::Play
 
     void Ball::HandleAllCollisions()
     {
-        this->HandleWallCollisions();
         this->HandlePaddleCollisions();
         this->HandleBrickCollisions();
+        this->HandleWallCollisions();
     }
 
     void Ball::HandleWallCollisions()
     {
+        AppInfo& appInfo = app->GetInfo();
+
         bool leftWallCheck = m_position.x - m_radius <= 0.f;
         bool rightWallCheck = m_position.x + m_radius >= appInfo.screenWidth;
         bool topWallCheck = m_position.y - m_radius <= 0.f;
-        bool bottomWallCheck = m_position.y + m_radius >= appInfo.screenHeight;
+        bool bottomWallCheck = m_position.y - m_radius >= appInfo.screenHeight + 200.f;
 
-        if (leftWallCheck || rightWallCheck)
+        if (leftWallCheck)
+            m_velocity.x *= -1.f;
+
+        if (rightWallCheck)
             m_velocity.x *= -1.f;
 
         if (topWallCheck)
@@ -91,6 +94,7 @@ namespace Break::Play
         {
             m_velocity = {0.f, 0.f};
             m_active = false;
+            m_paddle->SetNumLives(m_paddle->GetNumLives() - 1);
         }
     }
 
@@ -105,14 +109,12 @@ namespace Break::Play
         {
             if (m_velocity.y > 0.f)
             {
-                int randomHorizontalSwitch = GetRandomValue(0, 1);
-                float switchDirection = (randomHorizontalSwitch == 0) ? -1.f : 1.f;
-
+                float switchDirection = (m_paddle->GetVelocity() > 0.f) ? 1.f : -1.f;
                 float centerOfPaddle = m_paddle->GetPosition().x + m_paddle->GetSize().x / 2.f;
                 float distanceToPaddle = m_position.x - centerOfPaddle;
 
                 m_velocity.y *= -1.f;
-                m_velocity.x = distanceToPaddle / (m_paddle->GetSize().x / 2.f) * m_speed * switchDirection;
+                m_velocity.x = distanceToPaddle / (m_paddle->GetSize().x / 2.f) * m_speed;
             }
         }
     }

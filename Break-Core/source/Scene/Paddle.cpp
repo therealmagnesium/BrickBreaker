@@ -5,6 +5,10 @@
 #include <raylib.h>
 #include <assert.h>
 
+#define SPRINT_FUEL_DEC_SPEED 80.f
+#define SPRINT_FUEL_INC_SPEED 35.f
+#define SPRINT_FUEL_REC_SPEED 15.f
+
 using namespace Break::Core;
 
 namespace Break::Play
@@ -25,8 +29,31 @@ namespace Break::Play
 
     void Paddle::Update()
     {
+        static float maxSprintFuel = m_sprintFuel;
         s8 horizontalInput = IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT);
-        m_velocity = horizontalInput * m_speed;
+
+        if (m_sprintFuel <= 0.f)
+            m_recovering = true;
+
+        if (m_recovering && m_sprintFuel > 50.f)
+            m_recovering = false;
+
+        if (IsKeyDown(KEY_LEFT_SHIFT) && !m_recovering)
+        {
+            m_velocity = horizontalInput * m_sprintSpeed;
+            m_sprintFuel -= GetFrameTime() * SPRINT_FUEL_DEC_SPEED;
+        }
+        else if (m_recovering)
+        {
+            m_velocity = horizontalInput * m_speed;
+            m_sprintFuel += GetFrameTime() * SPRINT_FUEL_REC_SPEED;
+        }
+        else
+        {
+            m_velocity = horizontalInput * m_speed;
+            m_sprintFuel += GetFrameTime() * SPRINT_FUEL_INC_SPEED;
+        }
+
         m_position.x += m_velocity * GetFrameTime();
 
         this->HandleCollisions();

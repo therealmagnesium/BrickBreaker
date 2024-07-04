@@ -1,10 +1,11 @@
 # There will be Rows*Columns bricks total
-Rows: 4
+Rows: 3
 Columns: 8
+Offset: 20 250
+Spacing: 30 20
 Colors: Green Blue Red 
 
 # Tilemap data
 33333333
 33222233
 12211221
-11111111

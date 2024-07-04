@@ -11,12 +11,15 @@ namespace Break::Core
         u8 numRows = 0;
         u8 numCols = 0;
         std::string data;
-        Color brickColors[BRICK_TYPE_COUNT];
+        Vector2 offset{};
+        Vector2 spacing{};
+        Color brickColors[BRICK_TYPE_COUNT]{};
     };
 
     class IO
     {
     public:
+        static void Init();
         static MapFileData ReadMapFile(const char* path);
 
     private:

@@ -1,6 +1,8 @@
 #include "Core/Application.h"
 #include "Core/AssetManager.h"
 #include "Core/Base.h"
+#include "Core/IO.h"
+
 #include "Scene/Scene.h"
 
 #include <raylib.h>
@@ -20,10 +22,13 @@ namespace Break::Core
         s_instance = this;
         originalScreenDimensions = {(float)info.screenWidth, (float)info.screenHeight};
 
-        SetConfigFlags(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
+        ConfigFlags flags = (ConfigFlags)(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE | FLAG_VSYNC_HINT);
+        SetConfigFlags(flags);
         InitWindow(m_info.screenWidth, m_info.screenHeight, m_info.name.c_str());
-        SetTargetFPS(60);
         SetExitKey(KEY_NULL);
+        // SetTargetFPS(60);
+
+        IO::Init();
     }
 
     Application::~Application()
@@ -39,6 +44,9 @@ namespace Break::Core
         }
 
         m_scenes.clear();
+        CloseWindow();
+
+        TraceLog(LOG_INFO, "%s has finished running!", m_info.name.c_str());
     }
 
     void Application::Run()
@@ -79,8 +87,6 @@ namespace Break::Core
                 EndDrawing();
             }
         }
-
-        CloseWindow();
     }
 
     void Application::Quit()
@@ -97,6 +103,21 @@ namespace Break::Core
         {
             m_scenes[i] = scenes[i];
             m_scenes[i]->SetSceneIndex(i);
+        }
+    }
+
+    void Application::ToggleFullscreen()
+    {
+        if (!IsWindowFullscreen())
+        {
+            s32 monitor = GetCurrentMonitor();
+            SetWindowSize(GetMonitorWidth(monitor), GetMonitorHeight(monitor));
+            ::ToggleFullscreen();
+        }
+        else
+        {
+            ::ToggleFullscreen();
+            SetWindowSize(m_info.screenWidth, m_info.screenHeight);
         }
     }
 
@@ -128,11 +149,18 @@ namespace Break::Core
 
         AssetManager::Clean();
 
+        s8 prevSceneIndex = m_sceneIndex;
         m_sceneIndex = sceneIndex;
         m_loadingScene->OnCreate();
 
         currentScene = m_scenes[sceneIndex];
         currentScene->OnCreate();
+        /*
+                if (prevSceneIndex != -1 && m_scenes[prevSceneIndex] && !m_scenes[prevSceneIndex]->CanLoadAssets())
+                {
+                    delete m_scenes[prevSceneIndex];
+                    m_scenes[prevSceneIndex] = NULL;
+                }*/
     }
 
     void Application::HandleEvents()

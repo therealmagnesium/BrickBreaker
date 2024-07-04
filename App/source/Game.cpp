@@ -1,8 +1,8 @@
 #include "Game.h"
-#include "CreditsScene.h"
-#include "LoadingScene.h"
-#include "PlayScene.h"
-#include "TitleScene.h"
+#include "Scenes/CreditsScene.h"
+#include "Scenes/LoadingScene.h"
+#include "Scenes/PlayScene.h"
+#include "Scenes/TitleScene.h"
 
 #include <Core/Application.h>
 #include <Core/Base.h>
@@ -25,6 +25,7 @@ Game::Game(const AppInfo& info) : Application(info)
     m_scenes[CREDITS_SCENE] = m_creditsScene;
     m_scenes[LOADING_SCENE] = m_loadingScene;
 
+    // this->ToggleFullscreen();
     this->SetScenes(m_scenes, 4);
     this->SwitchToScene(TITLE_SCENE);
 }

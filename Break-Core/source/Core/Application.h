@@ -28,6 +28,7 @@ namespace Break::Core
 
         void Run();
         void Quit();
+        void ToggleFullscreen();
         void SwitchToScene(u8 sceneIndex);
 
     public:
