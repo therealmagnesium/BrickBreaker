@@ -1,5 +1,6 @@
 #pragma once
 #include <Core/Application.h>
+#include <Core/Timer.h>
 
 #include <Scene/Background.h>
 #include <Scene/Ball.h>
@@ -20,6 +21,8 @@ enum PlaySceneLabels
 {
     PLAY_LABEL_STAMINA = 0,
     PLAY_LABEL_LIVES,
+    PLAY_LABEL_LEVEL,
+    PLAY_LABEL_BRICKS,
     PLAY_LABEL_COUNT,
 };
 
@@ -48,10 +51,14 @@ private:
     void CreateOverlay();
 
 private:
+    u16 m_currentLevel = 4;
+
     Camera2D m_camera;
-    Background m_background;
     CanvasContext m_canvas;
+
+    Background m_background;
     Rectangle m_overlayRect;
+
     Ball m_ball;
     Level m_level;
     Paddle m_paddle;

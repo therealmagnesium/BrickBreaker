@@ -70,6 +70,7 @@ void TitleScene::CreateBackground()
 {
     Shader* shader = AssetManager::GetShader("stars");
     m_background.SetShader(shader);
+    m_background.SetColorFactor(0.9f, 0.5f, 0.8f);
 }
 
 void TitleScene::CreateCanvas()

@@ -1,4 +1,5 @@
 #include "Scene/Level.h"
+#include "Core/AssetManager.h"
 #include "Scene/Brick.h"
 #include "Core/Application.h"
 #include "Core/Base.h"
@@ -12,20 +13,45 @@ using namespace Break::Core;
 namespace Break::Play
 {
     static Application* app = NULL;
-    static AppInfo appInfo;
 
     Level::Level()
     {
         app = Application::Get();
         assert(app);
-        appInfo = app->GetInfo();
+
+        this->Init(1);
+    }
+
+    void Level::Init(u16 levelIndex)
+    {
+        AppInfo& appInfo = app->GetInfo();
+        Font* labelFont = AssetManager::GetFont("recharge");
+
+        m_levelIndex = levelIndex;
 
         m_mapData.offset = {0.f, 0.f};
         m_mapData.spacing = {50.f, 50.f};
+
+        m_intro.rect.width = appInfo.screenWidth;
+        m_intro.rect.height = 300.f;
+        m_intro.rect.x = 0.f;
+        m_intro.rect.y = (appInfo.screenHeight / 2.f) - (m_intro.rect.height / 2.f);
+
+        m_intro.timer.isDone = false;
+        m_intro.timer.lifetime = 3.f;
+        m_intro.bgColor = Fade(BLACK, 0.7f);
+
+        m_intro.label.SetFont(labelFont);
+        m_intro.label.SetFontSize(80);
+        m_intro.label.SetColor({233, 196, 106, 255});
+        m_intro.label.SetText("Level " + std::to_string(m_levelIndex));
+        m_intro.label.SetPosition(appInfo.screenWidth / 2.f, appInfo.screenHeight / 2.f);
     }
 
     void Level::Update()
     {
+        m_intro.timer.Update();
+
         for (auto& brick : m_bricks)
             brick.Update();
     }
@@ -34,6 +60,9 @@ namespace Break::Play
     {
         for (auto& brick : m_bricks)
             brick.Draw();
+
+        if (!m_intro.timer.isDone)
+            DrawRectangleRec(m_intro.rect, m_intro.bgColor);
     }
 
     void Level::ActivateBricks()
@@ -44,6 +73,7 @@ namespace Break::Play
 
     void Level::Load(const char* path)
     {
+        AppInfo& appInfo = app->GetInfo();
         m_mapData = IO::ReadMapFile(path);
 
         for (u8 i = 0; i < m_mapData.numRows; i++)
@@ -91,5 +121,18 @@ namespace Break::Play
                 m_bricks.push_back(brick);
             }
         }
+    }
+
+    u16 Level::GetActiveBrickCount()
+    {
+        u16 activeBricks = 0;
+
+        for (auto& brick : m_bricks)
+        {
+            if (brick.IsActive())
+                activeBricks++;
+        }
+
+        return activeBricks;
     }
 }

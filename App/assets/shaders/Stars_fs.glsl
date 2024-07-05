@@ -7,6 +7,7 @@ out vec4 finalColor;
 
 uniform float uTime;
 uniform vec2 uResolution;
+uniform vec3 uColorFactor;
 
 #define PI 3.14f
 #define NUM_LAYERS 6
@@ -69,7 +70,7 @@ vec3 CreateStarLayer(vec2 uv)
             float size = fract(n * 345.32f);
             float star = CreateStar(gv - offset - vec2(n, fract(n * 34.f)) + 0.5f, smoothstep(0.85f, 1.f, size) * 0.7f);
             vec3 c = sin(vec3(0.2f, 0.3f, 0.8f) * fract(n * 2345.f) * 123.f) * 0.5f + 0.5f;
-            c *= vec3(1.f, 0.5f, 1.f + size);
+            c *= vec3(uColorFactor.xy, uColorFactor.z + size);
 
             color += star * size * c;
         }

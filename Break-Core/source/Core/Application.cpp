@@ -169,14 +169,11 @@ namespace Break::Core
 
         if (IsWindowResized())
         {
-            m_info.screenWidth = GetScreenWidth();
-            m_info.screenHeight = GetScreenHeight();
-
             Camera2D* camera = currentScene->GetPrimaryCamera();
-            float widthRatio = m_info.screenWidth / originalScreenDimensions.x;
+            float widthRatio = GetScreenWidth() / (float)m_info.screenWidth;
             camera->zoom = widthRatio;
 
-            TraceLog(LOG_INFO, "Window resized to %dx%d", m_info.screenWidth, m_info.screenHeight);
+            TraceLog(LOG_INFO, "Window resized to %dx%d", GetScreenWidth(), GetScreenHeight());
         }
     }
 }

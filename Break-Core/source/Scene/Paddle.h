@@ -13,6 +13,7 @@ namespace Break::Play
         void Draw();
 
     public:
+        inline bool IsRecovering() { return m_recovering; }
         inline float GetSpeed() { return m_speed; }
         inline float GetVelocity() { return m_velocity; }
         inline float GetSprintSpeed() { return m_sprintSpeed; }

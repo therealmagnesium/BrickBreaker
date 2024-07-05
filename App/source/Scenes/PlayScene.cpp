@@ -4,6 +4,7 @@
 #include <Core/Application.h>
 #include <Core/AssetManager.h>
 #include <Core/IO.h>
+#include <Core/Timer.h>
 
 #include <raylib.h>
 #include <assert.h>
@@ -51,9 +52,20 @@ void PlayScene::OnUpdate()
         m_paddle.SetSprintFuel(100.f);
 
     m_canvas.labels[PLAY_LABEL_LIVES].SetText(TextFormat("Lives: %d", m_paddle.GetNumLives()));
+    m_canvas.labels[PLAY_LABEL_BRICKS].SetText(TextFormat("Bricks: %d", m_level.GetActiveBrickCount()));
 
     if (m_paddle.GetNumLives() == 0)
         app->SwitchToScene(TITLE_SCENE);
+
+    if (m_paddle.IsRecovering())
+        m_canvas.sliders[PLAY_SLIDER_STAMINA].SetColor(RED);
+    else if (m_paddle.GetSprintFuel() == 100.f)
+        m_canvas.sliders[PLAY_SLIDER_STAMINA].SetColor(GREEN);
+    else
+        m_canvas.sliders[PLAY_SLIDER_STAMINA].SetColor(SKYBLUE);
+
+    if (m_level.GetIntro().timer.isDone)
+        m_canvas.labels[PLAY_LABEL_LEVEL].SetActive(false);
 }
 
 void PlayScene::OnRender()
@@ -77,6 +89,7 @@ void PlayScene::CreateBackground()
 {
     Shader* shader = AssetManager::GetShader("stars");
     m_background.SetShader(shader);
+    m_background.SetColorFactor(0.5f, 0.2f, 0.5f);
 }
 
 void PlayScene::CreateBall()
@@ -108,8 +121,11 @@ void PlayScene::CreatePaddle()
 
 void PlayScene::CreateLevel()
 {
+    std::string levelPath = "assets/levels/level" + std::to_string(m_currentLevel) + ".map";
+
+    m_level.Init(m_currentLevel);
     m_level.ClearBricks();
-    m_level.Load("assets/levels/level4.map");
+    m_level.Load(levelPath.c_str());
     m_level.ActivateBricks();
 }
 
@@ -140,6 +156,11 @@ void PlayScene::CreateCanvas()
 
     m_canvas.labels[PLAY_LABEL_LIVES].SetPosition(appInfo.screenWidth - 300.f,
                                                   m_canvas.sliders[PLAY_SLIDER_STAMINA].GetPosition().y);
+
+    m_canvas.labels[PLAY_LABEL_LEVEL] = m_level.GetIntro().label;
+
+    m_canvas.labels[PLAY_LABEL_BRICKS].SetPosition(appInfo.screenWidth / 2.f,
+                                                   m_canvas.labels[PLAY_LABEL_LIVES].GetPosition().y);
 }
 
 void PlayScene::CreateOverlay()

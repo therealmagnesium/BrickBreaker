@@ -9,6 +9,7 @@
 
 #define MAX_BALL_Y_VEL 1400.f
 #define TOP_WALL_FORCE -1.08f;
+#define BOUNCE_FORCE -1.005f;
 
 using namespace Break::Core;
 
@@ -148,7 +149,7 @@ namespace Break::Play
                         horizontalCheck && (m_velocity.y < 0.f))
                     {
                         brick.Hit();
-                        m_velocity.y *= -1.f;
+                        m_velocity.y *= BOUNCE_FORCE;
                     }
                     // Hit from above
                     else if ((ballBottom >= brickTop) && (ballBottom < brickTop + brick.GetSize().y / 2.f) &&

@@ -36,9 +36,11 @@ namespace Break::Play
 
             s32 timeLocation = GetShaderLocation(*m_shader, "uTime");
             s32 resolutionLocation = GetShaderLocation(*m_shader, "uResolution");
+            s32 colorFactorLocation = GetShaderLocation(*m_shader, "uColorFactor");
 
             SetShaderValue(*m_shader, timeLocation, &time, SHADER_UNIFORM_FLOAT);
             SetShaderValue(*m_shader, resolutionLocation, &resolution, SHADER_UNIFORM_VEC2);
+            SetShaderValue(*m_shader, colorFactorLocation, &m_colorFactor, SHADER_UNIFORM_VEC3);
         }
     }
 

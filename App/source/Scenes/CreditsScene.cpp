@@ -74,6 +74,7 @@ void CreditsScene::CreateBackground()
 {
     Shader* shader = AssetManager::GetShader("stars");
     m_background.SetShader(shader);
+    m_background.SetColorFactor(0.4f, 0.3f, 0.3f);
 }
 
 void CreditsScene::CreateCanvas()
