@@ -22,11 +22,11 @@ namespace Break::Core
         s_instance = this;
         originalScreenDimensions = {(float)info.screenWidth, (float)info.screenHeight};
 
-        ConfigFlags flags = (ConfigFlags)(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE | FLAG_VSYNC_HINT);
+        ConfigFlags flags = (ConfigFlags)(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
         SetConfigFlags(flags);
         InitWindow(m_info.screenWidth, m_info.screenHeight, m_info.name.c_str());
         SetExitKey(KEY_NULL);
-        // SetTargetFPS(60);
+        SetTargetFPS(60);
 
         IO::Init();
     }

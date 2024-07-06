@@ -43,6 +43,7 @@ public:
     void OnUIRender() override;
 
 private:
+    void Reset();
     void CreateBackground();
     void CreateBall();
     void CreatePaddle();
@@ -51,7 +52,7 @@ private:
     void CreateOverlay();
 
 private:
-    u16 m_currentLevel = 4;
+    u16 m_currentLevel = 1;
 
     Camera2D m_camera;
     CanvasContext m_canvas;

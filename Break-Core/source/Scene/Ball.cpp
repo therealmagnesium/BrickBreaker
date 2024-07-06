@@ -43,7 +43,10 @@ namespace Break::Play
         if (IsKeyPressed(KEY_SPACE) && !m_active)
         {
             m_active = true;
-            m_velocity = {m_paddle->GetVelocity() / 1.2f, -m_speed};
+            u8 randDirection = rand() % 2;
+            float direction = (randDirection == 0) ? 1.f : -1.f;
+
+            m_velocity = {(m_speed / 1.2f) * direction, -m_speed};
         }
     }
 
@@ -77,10 +80,7 @@ namespace Break::Play
         bool topWallCheck = m_position.y - m_radius <= 0.f;
         bool bottomWallCheck = m_position.y - m_radius >= appInfo.screenHeight + 200.f;
 
-        if (leftWallCheck)
-            m_velocity.x *= -1.f;
-
-        if (rightWallCheck)
+        if (leftWallCheck || rightWallCheck)
             m_velocity.x *= -1.f;
 
         if (topWallCheck)

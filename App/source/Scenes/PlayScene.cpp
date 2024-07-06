@@ -26,12 +26,7 @@ void PlayScene::OnCreate()
     m_camera.rotation = 0.f;
     m_camera.zoom = 1.f;
 
-    this->CreateBackground();
-    this->CreateLevel();
-    this->CreatePaddle();
-    this->CreateBall();
-    this->CreateCanvas();
-    this->CreateOverlay();
+    this->Reset();
 
     this->SetClearColor({20, 20, 20, 255});
     this->SetPrimaryCamera(&m_camera);
@@ -53,6 +48,12 @@ void PlayScene::OnUpdate()
 
     m_canvas.labels[PLAY_LABEL_LIVES].SetText(TextFormat("Lives: %d", m_paddle.GetNumLives()));
     m_canvas.labels[PLAY_LABEL_BRICKS].SetText(TextFormat("Bricks: %d", m_level.GetActiveBrickCount()));
+
+    if (m_level.GetActiveBrickCount() == 0)
+    {
+        m_currentLevel++;
+        this->Reset();
+    }
 
     if (m_paddle.GetNumLives() == 0)
         app->SwitchToScene(TITLE_SCENE);
@@ -171,4 +172,17 @@ void PlayScene::CreateOverlay()
     m_overlayRect.y = 0.f;
     m_overlayRect.width = appInfo.screenWidth;
     m_overlayRect.height = 150.f;
+}
+
+void PlayScene::Reset()
+{
+    this->CreateBackground();
+    this->CreateLevel();
+    this->CreatePaddle();
+    this->CreateBall();
+    this->CreateCanvas();
+    this->CreateOverlay();
+
+    if (m_level.GetActiveBrickCount() == 0)
+        app->SwitchToScene(CREDITS_SCENE);
 }
