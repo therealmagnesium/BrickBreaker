@@ -66,9 +66,9 @@ namespace Break::Play
 
     void Ball::HandleAllCollisions()
     {
-        this->HandlePaddleCollisions();
         this->HandleBrickCollisions();
         this->HandleWallCollisions();
+        this->HandlePaddleCollisions();
     }
 
     void Ball::HandleWallCollisions()
@@ -81,7 +81,10 @@ namespace Break::Play
         bool bottomWallCheck = m_position.y - m_radius >= appInfo.screenHeight + 200.f;
 
         if (leftWallCheck || rightWallCheck)
+        {
+            m_position.x = (m_velocity.x > 0.f) ? appInfo.screenWidth - m_radius : 0.f + m_radius;
             m_velocity.x *= -1.f;
+        }
 
         if (topWallCheck)
         {
@@ -96,6 +99,7 @@ namespace Break::Play
             m_velocity = {0.f, 0.f};
             m_active = false;
             m_paddle->SetNumLives(m_paddle->GetNumLives() - 1);
+            m_level->ClearPowerUps();
         }
     }
 
@@ -122,56 +126,53 @@ namespace Break::Play
 
     void Ball::HandleBrickCollisions()
     {
-        for (u8 i = 0; i < m_level->GetData().numRows; i++)
+        for (u8 i = 0; i < m_level->GetActiveBrickCount(); i++)
         {
-            for (u8 j = 0; j < m_level->GetData().numCols; j++)
+            Brick& brick = m_level->GetBricks()[i];
+            if (brick.IsActive())
             {
-                Brick& brick = m_level->GetBricks()[i * m_level->GetData().numCols + j];
-                if (brick.IsActive())
+                float ballLeft = m_position.x - m_radius;
+                float ballRight = m_position.x + m_radius;
+                float ballTop = m_position.y - m_radius;
+                float ballBottom = m_position.y + m_radius;
+
+                float brickLeft = brick.GetPosition().x;
+                float brickRight = brick.GetPosition().x + brick.GetSize().x;
+                float brickTop = brick.GetPosition().y;
+                float brickBottom = brick.GetPosition().y + brick.GetSize().y;
+
+                float ballToBrickX = m_position.x - (brick.GetPosition().x + brick.GetSize().x / 2.f);
+                float ballToBrickY = m_position.y - (brick.GetPosition().y + brick.GetSize().y / 2.f);
+                bool horizontalCheck = fabs(ballToBrickX) < (brick.GetSize().x / 2.f + m_radius * 2.f / 3.f);
+                bool verticalCheck = fabs(ballToBrickY) < (brick.GetSize().y / 2.f + m_radius * 2.f / 3.f);
+
+                // Hit from below
+                if ((ballTop <= brickBottom) && (ballTop > brickBottom - brick.GetSize().y / 2.f) && horizontalCheck &&
+                    (m_velocity.y < 0.f))
                 {
-                    float ballLeft = m_position.x - m_radius;
-                    float ballRight = m_position.x + m_radius;
-                    float ballTop = m_position.y - m_radius;
-                    float ballBottom = m_position.y + m_radius;
-
-                    float brickLeft = brick.GetPosition().x;
-                    float brickRight = brick.GetPosition().x + brick.GetSize().x;
-                    float brickTop = brick.GetPosition().y;
-                    float brickBottom = brick.GetPosition().y + brick.GetSize().y;
-
-                    float ballToBrickX = m_position.x - (brick.GetPosition().x + brick.GetSize().x / 2.f);
-                    float ballToBrickY = m_position.y - (brick.GetPosition().y + brick.GetSize().y / 2.f);
-                    bool horizontalCheck = fabs(ballToBrickX) < (brick.GetSize().x / 2.f + m_radius * 2.f / 3.f);
-                    bool verticalCheck = fabs(ballToBrickY) < (brick.GetSize().y / 2.f + m_radius * 2.f / 3.f);
-
-                    // Hit from below
-                    if ((ballTop <= brickBottom) && (ballTop > brickBottom - brick.GetSize().y / 2.f) &&
-                        horizontalCheck && (m_velocity.y < 0.f))
-                    {
-                        brick.Hit();
-                        m_velocity.y *= BOUNCE_FORCE;
-                    }
-                    // Hit from above
-                    else if ((ballBottom >= brickTop) && (ballBottom < brickTop + brick.GetSize().y / 2.f) &&
-                             horizontalCheck && (m_velocity.y > 0.f))
-                    {
-                        brick.Hit();
-                        m_velocity.y *= -1.f;
-                    }
-                    // Hit from left
-                    else if ((ballRight >= brickLeft) && (ballRight < brickLeft + brick.GetSize().x / 2.f) &&
-                             verticalCheck && (m_velocity.x > 0.f))
-                    {
-                        brick.Hit();
-                        m_velocity.x *= -1.f;
-                    }
-                    // Hit from right
-                    else if ((ballLeft <= brickRight) && (ballLeft > brickRight - brick.GetSize().x / 2.f) &&
-                             verticalCheck && (m_velocity.x < 0.f))
-                    {
-                        brick.Hit();
-                        m_velocity.x *= -1.f;
-                    }
+                    brick.Hit();
+                    m_velocity.y *= -1.f;
+                }
+                // Hit from above
+                else if ((ballBottom >= brickTop) && (ballBottom < brickTop + brick.GetSize().y / 2.f) &&
+                         horizontalCheck && (m_velocity.y > 0.f))
+                {
+                    brick.Hit();
+                    m_velocity.y *= -1.f;
+                }
+                // Hit from left
+                else if ((ballRight >= brickLeft) && (ballRight < brickLeft + brick.GetSize().x / 2.f) &&
+                         verticalCheck && (m_velocity.x > 0.f))
+                {
+                    brick.Hit();
+                    m_velocity.x *= -1.f;
+                }
+                // Hit from right
+                else if ((ballLeft <= brickRight) && (ballLeft > brickRight - brick.GetSize().x / 2.f) &&
+                         verticalCheck && (m_velocity.x < 0.f))
+                {
+                    brick.Hit();
+                    m_velocity.x *= -1.f;
                 }
             }
         }

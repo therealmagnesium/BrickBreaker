@@ -52,7 +52,7 @@ private:
     void CreateOverlay();
 
 private:
-    u16 m_currentLevel = 1;
+    u16 m_currentLevel = 4;
 
     Camera2D m_camera;
     CanvasContext m_canvas;

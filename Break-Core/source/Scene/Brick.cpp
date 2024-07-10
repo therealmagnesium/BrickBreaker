@@ -1,4 +1,7 @@
 #include "Scene/Brick.h"
+#include "Core/Base.h"
+#include "Scene/PowerUp.h"
+#include "Scene/Level.h"
 #include "Core/Application.h"
 
 #include <raylib.h>
@@ -25,18 +28,18 @@ namespace Break::Play
         m_hit = false;
 
         if (m_numLives <= 0)
+        {
             m_active = false;
+            m_levelHandle->RandomlySpawnPowerUps(m_position.x, m_position.y);
+        }
     }
 
     void Brick::Draw()
     {
-        Color drawColor = m_color;
-
-        if (m_hit)
-            drawColor = ColorTint(m_color, GRAY);
-
         if (m_active)
             DrawRectangleV(m_position, m_size, m_hitsToTint[m_hitCount]);
+
+        DrawText(TextFormat("%d", m_numLives), V2_OPEN(m_position), 30, YELLOW);
     }
 
     void Brick::CreateTintMap()

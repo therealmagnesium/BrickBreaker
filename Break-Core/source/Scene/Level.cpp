@@ -4,6 +4,7 @@
 #include "Core/Application.h"
 #include "Core/Base.h"
 #include "Core/IO.h"
+#include "Scene/PowerUp.h"
 
 #include <assert.h>
 #include <raylib.h>
@@ -52,14 +53,30 @@ namespace Break::Play
     {
         m_intro.timer.Update();
 
-        for (auto& brick : m_bricks)
-            brick.Update();
+        for (u32 i = 0; i < m_bricks.size(); i++)
+        {
+            if (!m_bricks[i].IsActive())
+                m_bricks.erase(m_bricks.begin() + i);
+
+            m_bricks[i].Update();
+        }
+
+        for (u32 i = 0; i < m_powerUps.size(); i++)
+        {
+            if (!m_powerUps[i].active)
+                m_powerUps.erase(m_powerUps.begin() + i);
+
+            m_powerUps[i].Update();
+        }
     }
 
     void Level::Draw()
     {
         for (auto& brick : m_bricks)
             brick.Draw();
+
+        for (auto& powerUp : m_powerUps)
+            powerUp.Draw();
 
         if (!m_intro.timer.isDone)
             DrawRectangleRec(m_intro.rect, m_intro.bgColor);
@@ -69,6 +86,20 @@ namespace Break::Play
     {
         for (Brick& brick : m_bricks)
             brick.SetActive(true);
+    }
+
+    void Level::RandomlySpawnPowerUps(float brickX, float brickY)
+    {
+        u8 spawnCheck = rand() % 4;
+
+        PowerUp powerUp;
+        powerUp.radius = 30.f;
+        powerUp.speed = 250.f;
+        powerUp.position = {brickX, brickY};
+        powerUp.type = (PowerUpType)(rand() % POWER_UP_TYPE_COUNT);
+
+        if (spawnCheck == 0)
+            m_powerUps.push_back(powerUp);
     }
 
     void Level::Load(const char* path)
@@ -84,6 +115,7 @@ namespace Break::Play
                 u8 id = charID - '0'; // Converts char to unsigned integer
 
                 Brick brick;
+                brick.SetLevelHandle(this);
 
                 float brickWidth = (appInfo.screenWidth / (float)m_mapData.numCols) - m_mapData.spacing.x;
                 brick.SetSize(brickWidth, m_brickHeight);

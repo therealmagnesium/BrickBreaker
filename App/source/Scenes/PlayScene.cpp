@@ -126,6 +126,7 @@ void PlayScene::CreateLevel()
 
     m_level.Init(m_currentLevel);
     m_level.ClearBricks();
+    m_level.ClearPowerUps();
     m_level.Load(levelPath.c_str());
     m_level.ActivateBricks();
 }

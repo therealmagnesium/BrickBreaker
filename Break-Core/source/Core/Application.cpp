@@ -7,6 +7,7 @@
 
 #include <raylib.h>
 #include <math.h>
+#include <time.h>
 
 using namespace Break::Play;
 
@@ -22,11 +23,11 @@ namespace Break::Core
         s_instance = this;
         originalScreenDimensions = {(float)info.screenWidth, (float)info.screenHeight};
 
-        ConfigFlags flags = (ConfigFlags)(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE);
+        ConfigFlags flags = (ConfigFlags)(FLAG_WINDOW_RESIZABLE | FLAG_FULLSCREEN_MODE | FLAG_VSYNC_HINT);
         SetConfigFlags(flags);
         InitWindow(m_info.screenWidth, m_info.screenHeight, m_info.name.c_str());
         SetExitKey(KEY_NULL);
-        SetTargetFPS(60);
+        // SetTargetFPS(60);
 
         IO::Init();
     }
@@ -93,6 +94,8 @@ namespace Break::Core
     {
         m_running = false;
         AssetManager::Clean();
+
+        currentScene = NULL;
     }
 
     void Application::SetScenes(Scene** scenes, u8 numScenes)

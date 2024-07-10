@@ -3,6 +3,8 @@
 #include "Scene/Brick.h"
 
 #include <raylib.h>
+#include <stdlib.h>
+#include <time.h>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -14,6 +16,8 @@ namespace Break::Core
 
     void IO::Init()
     {
+        srand(time(NULL));
+
         colors["Red"] = RED;
         colors["Orange"] = ORANGE;
         colors["Yellow"] = YELLOW;

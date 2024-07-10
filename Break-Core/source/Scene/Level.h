@@ -2,7 +2,10 @@
 #include "Core/Base.h"
 #include "Core/IO.h"
 #include "Core/Timer.h"
+
 #include "Scene/Brick.h"
+#include "Scene/PowerUp.h"
+
 #include "UI/Label.h"
 
 #include <vector>
@@ -30,6 +33,7 @@ namespace Break::Play
         void Update();
         void Draw();
         void ActivateBricks();
+        void RandomlySpawnPowerUps(float brickX, float brickY);
         void Load(const char* path);
 
         u16 GetActiveBrickCount();
@@ -41,6 +45,7 @@ namespace Break::Play
         inline Brick* GetBricks() { return m_bricks.data(); }
 
         inline void ClearBricks() { m_bricks.clear(); }
+        inline void ClearPowerUps() { m_powerUps.clear(); }
         inline void SetLevelIndex(u16 index) { m_levelIndex = index; }
 
     private:
@@ -50,5 +55,6 @@ namespace Break::Play
         LevelIntro m_intro;
         MapFileData m_mapData;
         std::vector<Brick> m_bricks;
+        std::vector<PowerUp> m_powerUps;
     };
 }

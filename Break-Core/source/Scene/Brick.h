@@ -7,6 +7,8 @@
 
 namespace Break::Play
 {
+    class Level;
+
     class Brick
     {
     public:
@@ -29,6 +31,7 @@ namespace Break::Play
         inline void SetPosition(float x, float y) { m_position = {x, y}; }
         inline void SetSize(float width, float height) { m_size = {width, height}; }
         inline void SetColor(Color color) { m_color = color; }
+        inline void SetLevelHandle(Level* level) { m_levelHandle = level; }
 
     private:
         bool m_active = true;
@@ -38,6 +41,7 @@ namespace Break::Play
         s8 m_numLives = 1;
 
         Color m_color = WHITE;
+        Level* m_levelHandle = NULL;
 
         Vector2 m_position;
         Vector2 m_size;
